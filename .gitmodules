@@ -1,0 +1,3 @@
+[submodule "tgbot"]
+	path = dumbbot/tgbot
+	url = https://github.com/python-telegram-bot/python-telegram-bot.git
