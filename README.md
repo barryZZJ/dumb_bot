@@ -42,6 +42,7 @@ Mainly used existing handlers are
 [ConversationHandler](https://docs.python-telegram-bot.org/en/stable/telegram.ext.conversationhandler.html), 
 [MessageHandler](https://docs.python-telegram-bot.org/en/stable/telegram.ext.messagehandler.html).
 
+
 Callbacks should be defined with exactly these arguments: `(update: Update, context: CallbackContext)`.
 - To retrieve message text: `update.effective_message.text: str`
 - To retrieve arg list (CommandHandler/ChainCommandHandler): `context.args: list[str]`
@@ -51,13 +52,17 @@ Callbacks should be defined with exactly these arguments: `(update: Update, cont
   - Note: call `context.application.mark_data_for_update_persistence` to ensure the data is stored by persistent. Also, objects need to be copyable [by defining __deepcopy__(self, memo)](https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object).
 - More details at [doc for callbackcontext](https://docs.python-telegram-bot.org/en/stable/telegram.ext.callbackcontext.html).
 
+
 UpdateGenerator: Manually push updates to application, able to push messages of different types:
 - `plaintext()`: push plaintext message
 - `command()`: push command message
 - `automatic()`: automatic push corresponding message type based on message.text starts with `/` or not.
 
+
 To save bot's data like bot_data, user_data, chat_data, conversation states, etc to local file, refer to https://github.com/python-telegram-bot/python-telegram-bot/wiki/Making-your-bot-persistent
 
+
+Required packages: `httpx`, `tornado`.
 
 ### Application setup
 
