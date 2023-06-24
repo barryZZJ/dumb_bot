@@ -42,3 +42,31 @@ class DumbBot(Bot):
             return True
         else:
             raise NotImplementedError('requesting ' + endpoint)
+
+    # redefine pickling behaviour
+    def __copy__(self):
+        new_object = self.__class__()
+        new_object.me = self.me
+        new_object._token = self._token
+        new_object._bot_user = self._bot_user
+        return new_object
+
+    def __reduce__(self):
+        return self.__class__, (self.me,)
+
+    def __deepcopy__(self, memo):
+        new_object = self.__class__()
+        new_object.me = self.me.__deepcopy__(memo)
+        new_object._token = self._token
+        new_object._bot_user = self._bot_user.__deepcopy__(memo)
+        return new_object
+
+    def __getstate__(self):
+        # Define what gets pickled (object's state)
+        state = {k: self.__dict__[k] for k in ['_token', 'me', '_bot_user']}
+        return state
+
+    def __setstate__(self, state):
+        # Restore the object's state from the unpickled dictionary
+        self.__dict__.update(state)
+

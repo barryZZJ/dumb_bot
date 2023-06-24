@@ -1,16 +1,23 @@
 import asyncio
+import platform
+import signal
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
     Awaitable,
+    Coroutine,
     Generator,
+    List,
     Optional,
+    Sequence,
     Union,
 )
 
 from telegram._update import Update
-from telegram._utils.defaultvalue import DEFAULT_TRUE
+from telegram._utils.defaultvalue import DEFAULT_NONE, DEFAULT_TRUE, DefaultValue
 from telegram._utils.logging import get_logger
+from telegram._utils.types import ODVInput
 from telegram._utils.warnings import warn
 from telegram.ext._application import DEFAULT_GROUP, ApplicationHandlerStop, Application
 from telegram.ext._extbot import ExtBot
@@ -26,7 +33,48 @@ _LOGGER = get_logger(__name__)
 
 class DumbApplication(Application):
     """Reimplement methods to avoid isinstance return False"""
+
+    __slots__ = ('_loop',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def run(
+        self,
+        listen: str = "127.0.0.1",
+        port: int = 80,
+        url_path: str = "",
+        cert: Optional[Union[str, Path]] = None,
+        key: Optional[Union[str, Path]] = None,
+        bootstrap_retries: int = 0,
+        webhook_url: Optional[str] = None,
+        allowed_updates: Optional[List[str]] = None,
+        drop_pending_updates: Optional[bool] = None,
+        ip_address: Optional[str] = None,
+        max_connections: int = 40,
+        close_loop: bool = True,
+        stop_signals: ODVInput[Sequence[int]] = DEFAULT_NONE,
+        secret_token: Optional[str] = None,
+    ) -> None:
+        return self.run_webhook(
+            listen=listen,
+            port=port,
+            url_path=url_path,
+            cert=cert,
+            key=key,
+            bootstrap_retries=bootstrap_retries,
+            webhook_url=webhook_url,
+            allowed_updates=allowed_updates,
+            drop_pending_updates=drop_pending_updates,
+            ip_address=ip_address,
+            max_connections=max_connections,
+            close_loop=close_loop,
+            stop_signals=stop_signals,
+            secret_token=secret_token,
+        )
+
     def add_handler(self, handler: BaseHandler[Any, CCT], group: int = DEFAULT_GROUP) -> None:
+        """Need this to resolve some isinstance compare issues."""
         from telegram.ext._conversationhandler import ConversationHandler
 
         if not isinstance(handler, BaseHandler):
@@ -57,6 +105,7 @@ class DumbApplication(Application):
     def _mark_for_persistence_update(
         self, *, update: Optional[object] = None, job: Optional["Job"] = None
     ) -> None:
+        """Need this to resolve some isinstance compare issues."""
         if isinstance(update, Update):
             if update.effective_chat:
                 self._chat_ids_to_be_updated_in_persistence.add(update.effective_chat.id)
@@ -78,33 +127,7 @@ class DumbApplication(Application):
             Union[Generator[Optional["asyncio.Future[object]"], None, RT], Awaitable[RT]]
         ] = None,
     ) -> bool:
-        """Processes an error by passing it to all error handlers registered with
-        :meth:`add_error_handler`. If one of the error handlers raises
-        :class:`telegram.ext.ApplicationHandlerStop`, the error will not be handled by other error
-        handlers. Raising :class:`telegram.ext.ApplicationHandlerStop` also stops processing of
-        the update when this method is called by :meth:`process_update`, i.e. no further handlers
-        (even in other groups) will handle the update. All other exceptions raised by an error
-        handler will just be logged.
-
-        .. versionchanged:: 20.0
-
-            * ``dispatch_error`` was renamed to :meth:`process_error`.
-            * Exceptions raised by error handlers are now properly logged.
-            * :class:`telegram.ext.ApplicationHandlerStop` is no longer reraised but converted into
-              the return value.
-
-        Args:
-            update (:obj:`object` | :class:`telegram.Update`): The update that caused the error.
-            error (:obj:`Exception`): The error that was raised.
-            job (:class:`telegram.ext.Job`, optional): The job that caused the error.
-
-                .. versionadded:: 20.0
-            coroutine (:term:`coroutine function`, optional): The coroutine that caused the error.
-
-        Returns:
-            :obj:`bool`: :obj:`True`, if one of the error handlers raised
-            :class:`telegram.ext.ApplicationHandlerStop`. :obj:`False`, otherwise.
-        """
+        """Need this to resolve some isinstance compare issues."""
         if self.error_handlers:
             for (
                 callback,

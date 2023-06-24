@@ -6,6 +6,20 @@ A platform-independent bot that interacts purely based on string, utilizes [pyth
 
 Since PTB (python-telegram-bot) supports listening for webhooks, simply skip the process of actual webhook registration post request, then manually post to the webhook.
 
+**Note:**
+
+The dumbbot has to run in the main-thread (due to the telegram bot uses get_event_loop, which only works in main thread), consider use [multiprocessing](https://docs.python.org/3.9/library/multiprocessing.html).
+
+Use dumbbot like a server.
+
+Hint: to expose the processed result to outside, register another _awaitable_ callback and call it inside the handler's callback. E.g.:
+
+```python
+def handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    result = ...
+    await self.registered_outer_callback(result)
+```
+
 ## Modifications
 
 - Added `ChainCommandHandler`: Allow for multi-level commands like `/myapp subcommand <args>`. (It also handles single-level, so it can replace `CommandHandler`)
@@ -32,13 +46,18 @@ Callbacks should be defined with exactly these arguments: `(update: Update, cont
 - To retrieve message text: `update.effective_message.text: str`
 - To retrieve arg list (CommandHandler/ChainCommandHandler): `context.args: list[str]`
 - To retrieve regex filtered result: `context.match: re.Match`, `context.matches: list[re.Match]`
-- Use `context.bot_data` / `context.user_data` / `context.chat_data` to retrieve data dict, it can be used to communicate with other callbacks. 
+- Use `context.bot_data` / `context.user_data` / `context.chat_data` to retrieve data dict, it can be used to communicate with other callbacks. See [here](https://github.com/python-telegram-bot/python-telegram-bot/wiki/Storing-bot%2C-user-and-chat-related-data).
+  - By default stores in memory, use [persistence](https://github.com/python-telegram-bot/python-telegram-bot/wiki/Making-your-bot-persistent) method to store them.
+  - Note: call `context.application.mark_data_for_update_persistence` to ensure the data is stored by persistent. Also, objects need to be copyable [by defining __deepcopy__(self, memo)](https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object).
 - More details at [doc for callbackcontext](https://docs.python-telegram-bot.org/en/stable/telegram.ext.callbackcontext.html).
 
 UpdateGenerator: Manually push updates to application, able to push messages of different types:
 - `plaintext()`: push plaintext message
 - `command()`: push command message
 - `automatic()`: automatic push corresponding message type based on message.text starts with `/` or not.
+
+To save bot's data like bot_data, user_data, chat_data, conversation states, etc to local file, refer to https://github.com/python-telegram-bot/python-telegram-bot/wiki/Making-your-bot-persistent
+
 
 ### Application setup
 

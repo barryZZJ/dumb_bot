@@ -15,10 +15,11 @@ def _set_message_entity(message: Message, entities: list[MessageEntity]):
 
 
 class UpdateGenerator:
-    _UPDATE_ID_MAX = 1000
+    _UPDATE_ID_MAX = 100000
 
-    def __init__(self, port: int):
-        self._url = f'http://127.0.0.1:{port}'
+    def __init__(self, listen: str = "127.0.0.1", port: int = 18888):
+        self._url = f'http://{listen}:{port}'
+        print('ready to post to', self._url)
         self._curr_update_id = random.randint(0, self._UPDATE_ID_MAX)
 
     def _next_update_id(self) -> int:
