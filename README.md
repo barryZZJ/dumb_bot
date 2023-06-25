@@ -184,6 +184,13 @@ See [JobQueue](https://docs.python-telegram-bot.org/en/stable/telegram.ext.jobqu
 The persistence for JobQueue is [here](https://github.com/python-telegram-bot/ptbcontrib/blob/main/ptbcontrib/ptb_jobstores/README.md).
 Which requires `pip install git+https://github.com/python-telegram-bot/ptbcontrib.git@main`.
 
+Note:
+- Two types of job stores are available: `from ptbcontrib.ptb_jobstores import PTBMongoDBJobStore, PTBSQLAlchemyJobStore`
+- Add `replace_existing=True` to `job_kwargs` when scheduling a new job.
+- Pickling is involved in the process, and pickling `self.jobcallback` inevitably pickles the **entire class**.
+  So if some properties of your class is unpickable, this will **cause error**.
+  Solution is to make the job's callback function to another place (other classes that is pickable, or out of the class). 
+
 ### StringArgConverter
 
 Use this to deal with `context.args`.
