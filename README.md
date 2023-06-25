@@ -35,6 +35,10 @@ def handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
   
 - Added `UpdateGenerator`: Manually push an update to bot.
 
+## Requirements
+
+`pip install python-telegram-bot[webhooks]`
+
 ## Usage
 
 Mainly used existing handlers are 
@@ -61,8 +65,6 @@ UpdateGenerator: Manually push updates to application, able to push messages of 
 
 To save bot's data like bot_data, user_data, chat_data, conversation states, etc to local file, refer to https://github.com/python-telegram-bot/python-telegram-bot/wiki/Making-your-bot-persistent
 
-
-Required packages: `httpx`, `tornado`.
 
 ### Application setup
 
@@ -175,10 +177,12 @@ ChainCommandHandler is also compatible with ConversationHandler.
 
 ### JobQueue
 
-Allows scheduled jobs, require `pip install apscheduler`.
+Allows scheduled jobs, require `pip install python-telegram-bot[job-queue]`.
 
 See [JobQueue](https://docs.python-telegram-bot.org/en/stable/telegram.ext.jobqueue.html)
 
+The persistence for JobQueue is [here](https://github.com/python-telegram-bot/ptbcontrib/blob/main/ptbcontrib/ptb_jobstores/README.md).
+Which requires `pip install git+https://github.com/python-telegram-bot/ptbcontrib.git@main`.
 
 ### StringArgConverter
 

@@ -2,7 +2,7 @@
 import requests
 import random
 
-from dumbbot import Update, Chat, User, Message, MessageEntity
+from dumbbot import Update, Message, MessageEntity
 
 
 def utf16len(text: str) -> int:

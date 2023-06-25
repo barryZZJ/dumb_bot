@@ -1,6 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'tgbot'))
 from telegram import *
 from dumbbot._dumbapplication import DumbApplication
 from dumbbot._dumbbot import DumbBot

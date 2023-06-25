@@ -1,1 +1,1 @@
-from dumbbot.tgbot.telegram.ext import *
+from telegram.ext import *

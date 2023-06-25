@@ -31,7 +31,7 @@ from telegram.ext import filters as filters_module
 # from telegram import MessageEntity
 
 if TYPE_CHECKING:
-    from tgbot.telegram import Application
+    from telegram import Application
 
 RT = TypeVar("RT")
 
