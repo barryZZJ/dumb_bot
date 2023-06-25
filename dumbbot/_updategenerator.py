@@ -1,6 +1,6 @@
 # Generator Update manually
-import requests
 import random
+import requests
 
 from dumbbot import Update, Message, MessageEntity
 

@@ -1,12 +1,9 @@
 import asyncio
-import platform
-import signal
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
     Awaitable,
-    Coroutine,
     Generator,
     List,
     Optional,
@@ -15,7 +12,7 @@ from typing import (
 )
 
 from telegram._update import Update
-from telegram._utils.defaultvalue import DEFAULT_NONE, DEFAULT_TRUE, DefaultValue
+from telegram._utils.defaultvalue import DEFAULT_NONE, DEFAULT_TRUE
 from telegram._utils.logging import get_logger
 from telegram._utils.types import ODVInput
 from telegram._utils.warnings import warn
