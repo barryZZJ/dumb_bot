@@ -125,7 +125,7 @@ class ChainCommandHandler(BaseHandler[Update, CCT]):
         else:
             commands = frozenset(x.lower() for x in command)
         for comm in commands:
-            if comm != '' and not re.match(r"^/?[\da-z_-]{1,32}$", comm):
+            if comm != '' and not re.match(r"^/?[\da-z_-]+$", comm):
                 raise ValueError(f"Command `{comm}` is not a valid bot command")
             if comm == '' and filters is not None:
                 raise AttributeError('filters are not supported when command is empty!')
