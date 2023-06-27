@@ -1,3 +1,11 @@
+import sys
+import os
+
+_dumbot = os.path.dirname(__file__)
+sys.path.extend([
+    os.path.join(_dumbot, 'ptbcontrib'),
+])
+
 from telegram import *
 from dumbbot._dumbapplication import DumbApplication
 from dumbbot._dumbbot import DumbBot
