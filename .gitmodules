@@ -1,0 +1,3 @@
+[submodule "dumbbot/ptbcontrib"]
+	path = dumbbot/ptbcontrib
+	url = https://github.com/barryZZJ/ptbcontrib
