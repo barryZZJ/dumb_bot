@@ -28,7 +28,7 @@ class UpdateGenerator:
 
     def _normal(self, message: Message) -> bool:
         update = Update(self._next_update_id(), message)
-        print('posting', update.to_json())
+        print('posting update to dumbbot: ', update.to_json())
         resp = requests.post(self._url, json=update.to_dict())
         return resp.ok
 
