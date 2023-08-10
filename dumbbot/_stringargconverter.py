@@ -107,14 +107,16 @@ class StringArgConverter:
 
         # Parse required positional arguments
         for i, arg_name in enumerate(self._required_args):
+            assert actual_args[i] is not None, f'Required arg at pos {i} is `None`!'
             parsed_args[arg_name] = self._cast(actual_args[i], arg_name)
 
         # Parse optional keyword arguments
         foundKwargs = False
-        for arg in actual_args[len(self._required_args):]:
-            if '=' in arg:
+        for actual_arg in actual_args[len(self._required_args):]:
+            assert actual_arg is not None, 'Optional arg is `None`!'
+            if '=' in actual_arg:
                 # Argument with name and value
-                key, value = re.match(r'(\w+?)=(.+)', arg).group(1, 2)
+                key, value = re.match(r'(\w+?)=(.+)', actual_arg).group(1, 2)
                 if key in parsed_args:
                     raise TypeError('多次给`' + key + '`赋值！')
                 if key not in self._optional_args:
@@ -125,7 +127,7 @@ class StringArgConverter:
                 # Argument without name, assign it to the next available optional argument
                 for key in self._optional_args:
                     if key not in parsed_args:
-                        parsed_args[key] = self._cast(arg, key)
+                        parsed_args[key] = self._cast(actual_arg, key)
                         break
             else:
                 raise SyntaxError('名称参数后不能出现位置参数！')
