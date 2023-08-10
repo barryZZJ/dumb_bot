@@ -1,6 +1,7 @@
 # Generator Update manually
 import random
 import requests
+from loguru import logger
 
 from dumbbot import Update, Message, MessageEntity
 
@@ -19,7 +20,7 @@ class UpdateGenerator:
 
     def __init__(self, listen: str = "127.0.0.1", port: int = 18888):
         self._url = f'http://{listen}:{port}'
-        print('ready to post to', self._url)
+        logger.info('ready to post to {}', self._url)
         self._curr_update_id = random.randint(0, self._UPDATE_ID_MAX)
 
     def _next_update_id(self) -> int:
@@ -28,7 +29,7 @@ class UpdateGenerator:
 
     def _normal(self, message: Message) -> bool:
         update = Update(self._next_update_id(), message)
-        print('posting update to dumbbot: ', update.to_json())
+        logger.info('posting update to dumbbot: {}', update.to_json())
         resp = requests.post(self._url, json=update.to_dict())
         return resp.ok
 
