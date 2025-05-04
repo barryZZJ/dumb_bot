@@ -12,7 +12,7 @@ The dumbbot has to run in the main-thread (due to the telegram bot uses get_even
 
 Use dumbbot like a server.
 
-Hint: to expose the processed result to outside, register another _awaitable_ callback and call it inside the handler's callback. E.g.:
+Note: you can't use reply_text to reply message, to expose the processed result to outside, register another _awaitable_ callback and call it inside the handler's callback. E.g.:
 
 ```python
 def handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
