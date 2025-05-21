@@ -16,13 +16,20 @@ class StringArgConverter:
     """
     @overload
     def __init__(self, command: str = None, **kwargs: tuple[Type[T]]):
+        """indicate a required arg with 1 element in the tuple"""
         ...
 
     @overload
-    def __init__(self, command: str = None, **kwargs: tuple[Type[T], Optional[Union[T, Callable[[], T]]]]):
+    def __init__(self, command: str = None, **kwargs: tuple[Type[T], Callable[[str], T]]):
+        """indicate a required arg with 2 elements in the tuple"""
         ...
 
-    def __init__(self, command: str = None, **kwargs: tuple[Type[T], Optional[Union[T, Callable[[], T]]], Callable[[str], T]]):
+    @overload
+    def __init__(self, command: str = None, **kwargs: tuple[Type[T], Union[T, Callable[[], T]]]):
+        """indicate an optional arg with 2 elements in the tuple"""
+        ...
+
+    def __init__(self, command: str = None, **kwargs: tuple[Type[T], Union[T, Callable[[], T]], Callable[[str], T]]):
         """Predefine the desired usage of a command. Order matters.
 
         Parameters
@@ -31,21 +38,27 @@ class StringArgConverter:
             A custom text to indicate a command, e.g. '/sub now <channel> <program> [detail]'.
             Use `self.usage` to retrieve usage of format 'Usage: `command`'
 
-        **kwargs: tuple
-            keyname indicate an argument, value should be a tuple with 1, 2, or 3 elements.
-            To indicate a required arg: 1 or 2 elements should be in the tuple:
-                the 1st element should be a Type[T]  e.g. (str,)
-                the 2nd element should be a Callable[[str], T] that casts the actual arg to T.
+        **kwargs: tuple, define the arguments of the command.
+            keyname indicate an argument's name, value should be a tuple with 1, 2, or 3 elements:
+
+            To indicate a required arg: 1 to 2 elements should be in the tuple:
+                the 1st element: arg type. Should be a Type[T]  e.g. (str,)
+
+                the 2nd element (optional): cast function.
+                    Should be a Callable[[str], T] that casts text arg value to T.
                     If not provided, T(value) will be used to cast value's type.
 
-            To indicate an optional arg: 2 or 3 elements should be in the tuple:
-                the 1st element should be a Type[T]  e.g. (str,)
-                the 2nd element can be:
-                    T, indicates its default value, e.g. (str, 'default')
-                    Callable[[],T], indicates the function to retrieve its default
-                        value, which is evaluated at actual arg parsing,
-                        e.g. (datetime.datetime, lambda: datetime.datetime.now())
-                the 3rd element should be a Callable[[str], T] that casts the actual arg to T.
+            To indicate an optional arg: 2 to 3 elements should be in the tuple:
+                the 1st element: arg type. Should be a Type[T]  e.g. (str,)
+
+                the 2nd element: default value. Can be:
+                    - T, i.e. value of type T. e.g. (str, 'default')
+                    - Callable[[],T], a function (with no argument) to retrieve its default
+                      value, which is evaluated during actual arg parsing,
+                      e.g. (datetime.datetime, lambda: datetime.datetime.now())
+
+                the 3rd element (optional): cast function.
+                    Should be a Callable[[str], T] that casts the actual arg to T.
                     If not provided, T(value) will be used to cast value's type.
 
         """
